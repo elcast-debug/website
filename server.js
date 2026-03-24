@@ -1,10 +1,37 @@
-import Bun from "bun";
+import http from "http";
 import path from "path";
 import fs from "fs";
 
 const PORT = 3000;
 const PUBLIC_DIR = "./public";
-const ADMIN_PASSWORD = Bun.env.ADMIN_PASSWORD || "admin123";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
+
+// MIME type map for static file serving
+const MIME_TYPES = {
+  ".html": "text/html",
+  ".css": "text/css",
+  ".js": "application/javascript",
+  ".json": "application/json",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".svg": "image/svg+xml",
+  ".ico": "image/x-icon",
+  ".webp": "image/webp",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2",
+  ".ttf": "font/ttf",
+  ".otf": "font/otf",
+  ".mp4": "video/mp4",
+  ".webm": "video/webm",
+  ".mp3": "audio/mpeg",
+  ".wav": "audio/wav",
+  ".pdf": "application/pdf",
+  ".zip": "application/zip",
+  ".txt": "text/plain",
+  ".xml": "application/xml",
+};
 
 // Simple session store
 const sessions = new Map();
@@ -13,8 +40,8 @@ function generateSessionId() {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
-function isAuthenticated(req) {
-  const cookie = req.headers.get("cookie") || "";
+function isAuthenticated(headers) {
+  const cookie = headers["cookie"] || "";
   const sessionMatch = cookie.match(/sessionId=([^;]+)/);
   if (!sessionMatch) return false;
   const sessionId = sessionMatch[1];
@@ -26,48 +53,107 @@ function getDomainFolder(hostname) {
   return path.join(PUBLIC_DIR, domain);
 }
 
-async function handleFileManager(req, pathname) {
-  const url = new URL(req.url, `http://${req.headers.get("host")}`);
+// Read the full request body as a Buffer
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    req.on("data", (chunk) => chunks.push(chunk));
+    req.on("end", () => resolve(Buffer.concat(chunks)));
+    req.on("error", reject);
+  });
+}
 
+// Parse multipart/form-data — returns { fields, files: [{ fieldname, filename, data }] }
+function parseMultipart(body, boundary) {
+  const files = [];
+  const fields = {};
+  const boundaryBuf = Buffer.from("--" + boundary);
+  const parts = [];
+
+  let start = 0;
+  while (start < body.length) {
+    const boundaryIdx = body.indexOf(boundaryBuf, start);
+    if (boundaryIdx === -1) break;
+    const afterBoundary = boundaryIdx + boundaryBuf.length;
+    // Check for final boundary (--)
+    if (body[afterBoundary] === 0x2d && body[afterBoundary + 1] === 0x2d) break;
+    // Skip CRLF after boundary
+    const headerStart = afterBoundary + 2;
+    // Find end of headers (double CRLF)
+    const headerEnd = body.indexOf(Buffer.from("\r\n\r\n"), headerStart);
+    if (headerEnd === -1) break;
+    const headerStr = body.slice(headerStart, headerEnd).toString("utf8");
+    const dataStart = headerEnd + 4;
+    // Find next boundary
+    const nextBoundary = body.indexOf(boundaryBuf, dataStart);
+    const dataEnd = nextBoundary === -1 ? body.length : nextBoundary - 2; // strip trailing CRLF
+    const data = body.slice(dataStart, dataEnd);
+    parts.push({ headerStr, data });
+    start = nextBoundary === -1 ? body.length : nextBoundary;
+  }
+
+  for (const { headerStr, data } of parts) {
+    const dispositionMatch = headerStr.match(/Content-Disposition:[^\r\n]*name="([^"]+)"/i);
+    const filenameMatch = headerStr.match(/Content-Disposition:[^\r\n]*filename="([^"]+)"/i);
+    if (!dispositionMatch) continue;
+    const fieldname = dispositionMatch[1];
+    if (filenameMatch) {
+      files.push({ fieldname, filename: filenameMatch[1], data });
+    } else {
+      fields[fieldname] = data.toString("utf8");
+    }
+  }
+
+  return { fields, files };
+}
+
+// Send a JSON response
+function sendJSON(res, status, body) {
+  const payload = JSON.stringify(body);
+  res.writeHead(status, { "Content-Type": "application/json" });
+  res.end(payload);
+}
+
+// Send an HTML response
+function sendHTML(res, status, html, extraHeaders = {}) {
+  res.writeHead(status, { "Content-Type": "text/html", ...extraHeaders });
+  res.end(html);
+}
+
+async function handleFileManager(req, res, pathname, searchParams) {
   // Login endpoint
   if (pathname === "/api/login" && req.method === "POST") {
-    const body = await req.json();
+    let body;
+    try {
+      const raw = await readBody(req);
+      body = JSON.parse(raw.toString("utf8"));
+    } catch {
+      return sendJSON(res, 400, { error: "Invalid JSON" });
+    }
     if (body.password === ADMIN_PASSWORD) {
       const sessionId = generateSessionId();
       sessions.set(sessionId, Date.now());
-      return new Response(JSON.stringify({ success: true, sessionId }), {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Set-Cookie": `sessionId=${sessionId}; Path=/; HttpOnly; Max-Age=86400`,
-        },
+      res.writeHead(200, {
+        "Content-Type": "application/json",
+        "Set-Cookie": `sessionId=${sessionId}; Path=/; HttpOnly; Max-Age=86400`,
       });
+      return res.end(JSON.stringify({ success: true, sessionId }));
     }
-    return new Response(JSON.stringify({ success: false, error: "Invalid password" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
+    return sendJSON(res, 401, { success: false, error: "Invalid password" });
   }
 
-  // Check authentication
-  if (!isAuthenticated(req)) {
+  // Check authentication for all other routes
+  if (!isAuthenticated(req.headers)) {
     if (pathname === "/" || pathname === "/index.html") {
-      return new Response(getLoginPage(), {
-        headers: { "Content-Type": "text/html" },
-      });
+      return sendHTML(res, 200, getLoginPage());
     }
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
+    return sendJSON(res, 401, { error: "Unauthorized" });
   }
 
   // List files
   if (pathname === "/api/files" && req.method === "GET") {
-    const domain = url.searchParams.get("domain");
-    if (!domain) {
-      return new Response(JSON.stringify({ error: "Domain required" }), { status: 400 });
-    }
+    const domain = searchParams.get("domain");
+    if (!domain) return sendJSON(res, 400, { error: "Domain required" });
 
     const domainPath = path.join(PUBLIC_DIR, domain);
     try {
@@ -80,113 +166,107 @@ async function handleFileManager(req, pathname) {
         isDirectory: file.isDirectory(),
         size: file.isDirectory() ? null : fs.statSync(path.join(domainPath, file.name)).size,
       }));
-      return new Response(JSON.stringify(fileList), {
-        headers: { "Content-Type": "application/json" },
-      });
+      return sendJSON(res, 200, fileList);
     } catch (error) {
-      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+      return sendJSON(res, 500, { error: error.message });
     }
   }
 
   // Upload file
   if (pathname === "/api/upload" && req.method === "POST") {
-    const domain = url.searchParams.get("domain");
-    if (!domain) {
-      return new Response(JSON.stringify({ error: "Domain required" }), { status: 400 });
-    }
+    const domain = searchParams.get("domain");
+    if (!domain) return sendJSON(res, 400, { error: "Domain required" });
 
     const domainPath = path.join(PUBLIC_DIR, domain);
     try {
-      const formData = await req.formData();
-      const file = formData.get("file");
-      if (!file) {
-        return new Response(JSON.stringify({ error: "No file provided" }), { status: 400 });
+      const contentType = req.headers["content-type"] || "";
+      const boundaryMatch = contentType.match(/boundary=(.+)$/);
+      if (!boundaryMatch) return sendJSON(res, 400, { error: "Invalid multipart request" });
+
+      const body = await readBody(req);
+      const { files } = parseMultipart(body, boundaryMatch[1]);
+
+      if (!files.length) return sendJSON(res, 400, { error: "No file provided" });
+
+      if (!fs.existsSync(domainPath)) {
+        fs.mkdirSync(domainPath, { recursive: true });
       }
 
-      const filename = file.name;
-      const filepath = path.join(domainPath, filename);
-
-      if (!filepath.startsWith(domainPath)) {
-        return new Response(JSON.stringify({ error: "Invalid file path" }), { status: 400 });
+      for (const file of files) {
+        const filename = path.basename(file.filename);
+        const filepath = path.join(domainPath, filename);
+        if (!path.resolve(filepath).startsWith(path.resolve(domainPath))) {
+          return sendJSON(res, 400, { error: "Invalid file path" });
+        }
+        fs.writeFileSync(filepath, file.data);
       }
 
-      const buffer = await file.arrayBuffer();
-      fs.writeFileSync(filepath, Buffer.from(buffer));
-
-      return new Response(JSON.stringify({ success: true, filename }), {
-        headers: { "Content-Type": "application/json" },
-      });
+      return sendJSON(res, 200, { success: true, filename: files[0].filename });
     } catch (error) {
-      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+      return sendJSON(res, 500, { error: error.message });
     }
   }
 
   // Delete file
   if (pathname === "/api/delete" && req.method === "POST") {
-    const domain = url.searchParams.get("domain");
-    const filename = url.searchParams.get("filename");
-    if (!domain || !filename) {
-      return new Response(JSON.stringify({ error: "Domain and filename required" }), { status: 400 });
-    }
+    const domain = searchParams.get("domain");
+    const filename = searchParams.get("filename");
+    if (!domain || !filename) return sendJSON(res, 400, { error: "Domain and filename required" });
 
-    const filepath = path.join(PUBLIC_DIR, domain, filename);
     const domainPath = path.join(PUBLIC_DIR, domain);
+    const filepath = path.join(domainPath, filename);
 
-    if (!filepath.startsWith(domainPath)) {
-      return new Response(JSON.stringify({ error: "Invalid file path" }), { status: 400 });
+    if (!path.resolve(filepath).startsWith(path.resolve(domainPath))) {
+      return sendJSON(res, 400, { error: "Invalid file path" });
     }
 
     try {
       if (fs.existsSync(filepath)) {
         fs.rmSync(filepath, { recursive: true });
-        return new Response(JSON.stringify({ success: true }), {
-          headers: { "Content-Type": "application/json" },
-        });
+        return sendJSON(res, 200, { success: true });
       }
-      return new Response(JSON.stringify({ error: "File not found" }), { status: 404 });
+      return sendJSON(res, 404, { error: "File not found" });
     } catch (error) {
-      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+      return sendJSON(res, 500, { error: error.message });
     }
   }
 
   // Download file
   if (pathname === "/api/download" && req.method === "GET") {
-    const domain = url.searchParams.get("domain");
-    const filename = url.searchParams.get("filename");
-    if (!domain || !filename) {
-      return new Response(JSON.stringify({ error: "Domain and filename required" }), { status: 400 });
-    }
+    const domain = searchParams.get("domain");
+    const filename = searchParams.get("filename");
+    if (!domain || !filename) return sendJSON(res, 400, { error: "Domain and filename required" });
 
-    const filepath = path.join(PUBLIC_DIR, domain, filename);
     const domainPath = path.join(PUBLIC_DIR, domain);
+    const filepath = path.join(domainPath, filename);
 
-    if (!filepath.startsWith(domainPath)) {
-      return new Response(JSON.stringify({ error: "Invalid file path" }), { status: 400 });
+    if (!path.resolve(filepath).startsWith(path.resolve(domainPath))) {
+      return sendJSON(res, 400, { error: "Invalid file path" });
     }
 
     try {
       if (fs.existsSync(filepath) && fs.statSync(filepath).isFile()) {
-        const file = Bun.file(filepath);
-        return new Response(file, {
-          headers: {
-            "Content-Disposition": `attachment; filename="${filename}"`,
-          },
+        const stat = fs.statSync(filepath);
+        res.writeHead(200, {
+          "Content-Type": "application/octet-stream",
+          "Content-Disposition": `attachment; filename="${path.basename(filename)}"`,
+          "Content-Length": stat.size,
         });
+        fs.createReadStream(filepath).pipe(res);
+        return;
       }
-      return new Response(JSON.stringify({ error: "File not found" }), { status: 404 });
+      return sendJSON(res, 404, { error: "File not found" });
     } catch (error) {
-      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+      return sendJSON(res, 500, { error: error.message });
     }
   }
 
   // Dashboard
   if (pathname === "/" || pathname === "/index.html") {
-    return new Response(getDashboardPage(), {
-      headers: { "Content-Type": "text/html" },
-    });
+    return sendHTML(res, 200, getDashboardPage());
   }
 
-  return new Response("Not found", { status: 404 });
+  sendJSON(res, 404, { error: "Not found" });
 }
 
 function getLoginPage() {
@@ -413,46 +493,65 @@ function getDashboardPage() {
 }
 
 // Main server
-Bun.serve({
-  port: PORT,
-  async fetch(req) {
-    const url = new URL(req.url);
-    const pathname = url.pathname;
+const server = http.createServer(async (req, res) => {
+  const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
+  const pathname = url.pathname;
+  const searchParams = url.searchParams;
 
-    // File manager routes
-    if (pathname.startsWith("/api/") || pathname === "/" || pathname === "/index.html") {
-      return handleFileManager(req, pathname);
-    }
-
-    // Static file serving based on domain
-    const hostname = req.headers.get("host") || "localhost";
-    const domainFolder = getDomainFolder(hostname);
-
-    let filePath = path.join(domainFolder, pathname === "/" ? "index.html" : pathname);
-
-    // Security: prevent directory traversal
-    if (!filePath.startsWith(domainFolder)) {
-      return new Response("Forbidden", { status: 403 });
-    }
-
+  // File manager routes
+  if (pathname.startsWith("/api/") || pathname === "/" || pathname === "/index.html") {
     try {
-      // Check if it's a directory, serve index.html
-      if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
-        filePath = path.join(filePath, "index.html");
-      }
-
-      if (fs.existsSync(filePath)) {
-        const file = Bun.file(filePath);
-        return new Response(file);
-      }
-
-      return new Response("Not found", { status: 404 });
+      await handleFileManager(req, res, pathname, searchParams);
     } catch (error) {
-      return new Response("Server error", { status: 500 });
+      if (!res.headersSent) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Internal server error" }));
+      }
     }
-  },
+    return;
+  }
+
+  // Static file serving based on domain
+  const hostname = req.headers.host || "localhost";
+  const domainFolder = getDomainFolder(hostname);
+
+  let filePath = path.join(domainFolder, pathname === "/" ? "index.html" : pathname);
+
+  // Security: prevent directory traversal
+  if (!path.resolve(filePath).startsWith(path.resolve(domainFolder))) {
+    res.writeHead(403);
+    res.end("Forbidden");
+    return;
+  }
+
+  try {
+    // Check if it's a directory, serve index.html
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+      filePath = path.join(filePath, "index.html");
+    }
+
+    if (fs.existsSync(filePath)) {
+      const ext = path.extname(filePath).toLowerCase();
+      const contentType = MIME_TYPES[ext] || "application/octet-stream";
+      const stat = fs.statSync(filePath);
+      res.writeHead(200, {
+        "Content-Type": contentType,
+        "Content-Length": stat.size,
+      });
+      fs.createReadStream(filePath).pipe(res);
+      return;
+    }
+
+    res.writeHead(404);
+    res.end("Not found");
+  } catch (error) {
+    res.writeHead(500);
+    res.end("Server error");
+  }
 });
 
-console.log(`🚀 Server running on http://localhost:${PORT}`);
-console.log(`📁 Static files served from ./public/{domain}`);
-console.log(`🔐 File manager available at http://localhost:${PORT}`);
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📁 Static files served from ./public/{domain}`);
+  console.log(`🔐 File manager available at http://localhost:${PORT}`);
+});
