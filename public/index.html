@@ -776,31 +776,36 @@
   }, { threshold: 0.08 });
   fadeEls.forEach(el => obs.observe(el));
 
-  // ── COUNTER ANIMATION ──
-  function animateCounter(el, target, suffix) {
-    let current = 0;
-    const step = target / 60;
-    const timer = setInterval(() => {
-      current += step;
-      if (current >= target) { current = target; clearInterval(timer); }
-      el.textContent = Math.floor(current).toLocaleString() + suffix;
-    }, 25);
-  }
+  // ── COUNTER ANIMATION (FIXED) ──
+function animateCounter(el, target, suffix, isFloat) {
+  let current = 0;
+  const step = target / 60;
+  const timer = setInterval(() => {
+    current += step;
+    if (current >= target) { current = target; clearInterval(timer); }
+    const display = isFloat ? current.toFixed(1) : Math.floor(current).toLocaleString();
+    el.innerHTML = display + `<sup>${suffix}</sup>`;
+  }, 25);
+}
 
-  const statsObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const nums = [['4,800', 4800, '+'], ['4.9', 4.9, '★'], ['60', 60, 'min'], ['24', 24, '/7']];
-        document.querySelectorAll('.stat-num').forEach((el, i) => {
-          const [,val, suf] = nums[i];
-          animateCounter(el, val, `<sup>${suf}</sup>`);
-        });
-        statsObs.disconnect();
-      }
-    });
-  }, { threshold: 0.5 });
-  const stripEl = document.querySelector('.stats-strip');
-  if (stripEl) statsObs.observe(stripEl);
+const statsObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const configs = [
+        { val: 4800, suffix: '+',   float: false },
+        { val: 4.9,  suffix: '★',  float: true  },
+        { val: 60,   suffix: 'min', float: false },
+        { val: 24,   suffix: '/7',  float: false },
+      ];
+      document.querySelectorAll('.stat-num').forEach((el, i) => {
+        animateCounter(el, configs[i].val, configs[i].suffix, configs[i].float);
+      });
+      statsObs.disconnect();
+    }
+  });
+}, { threshold: 0.5 });
+const stripEl = document.querySelector('.stats-strip');
+if (stripEl) statsObs.observe(stripEl);
 
   // ── FORM SUBMIT ──
   function handleSubmit(e) {
