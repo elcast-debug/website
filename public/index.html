@@ -1,527 +1,513 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SoundForge Studio — Music Production & Mastering</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <title>FlowMaster Plumbing — Fast, Reliable, Professional</title>
+  //fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #080b12;
-      --surface: #0f1420;
-      --card: rgba(255,255,255,0.04);
-      --border: rgba(255,255,255,0.08);
-      --accent: #7c3aed;
-      --accent2: #06b6d4;
-      --accent3: #f59e0b;
-      --text: #e2e8f0;
+      --blue: #1d4ed8;
+      --blue-light: #3b82f6;
+      --blue-dark: #1e3a8a;
+      --cyan: #0ea5e9;
+      --orange: #f97316;
+      --bg: #f8fafc;
+      --dark: #0f172a;
+      --surface: #ffffff;
       --muted: #64748b;
-      --glow: 0 0 40px rgba(124,58,237,0.3);
+      --border: #e2e8f0;
+      --text: #1e293b;
     }
 
     html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--bg); overflow-x: hidden; }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
-    }
-
-    /* ── SCROLLBAR ── */
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 3px; }
 
     /* ── NAV ── */
     nav {
       position: fixed; top: 0; width: 100%; z-index: 100;
-      padding: 1.2rem 5%;
+      background: rgba(15,23,42,0.97);
+      backdrop-filter: blur(16px);
+      padding: 1rem 5%;
       display: flex; align-items: center; justify-content: space-between;
-      background: rgba(8,11,18,0.85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      transition: all 0.3s;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
     .logo {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.4rem; font-weight: 700;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      letter-spacing: -0.5px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.6rem; font-weight: 800; letter-spacing: 0.5px;
+      color: #fff; display: flex; align-items: center; gap: 0.5rem;
     }
+    .logo-icon { font-size: 1.4rem; }
+    .logo span { color: var(--cyan); }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a {
-      color: var(--muted); text-decoration: none; font-size: 0.9rem;
-      font-weight: 500; transition: color 0.2s; letter-spacing: 0.3px;
+    .nav-links a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-phone {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: var(--orange); color: #fff;
+      padding: 0.6rem 1.4rem; border-radius: 8px;
+      font-weight: 700; font-size: 0.92rem; text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .nav-links a:hover { color: var(--text); }
-    .nav-cta {
-      background: linear-gradient(135deg, var(--accent), #9333ea);
-      color: #fff; border: none; padding: 0.6rem 1.5rem;
-      border-radius: 50px; cursor: pointer; font-weight: 600;
-      font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .nav-cta:hover { transform: translateY(-1px); box-shadow: var(--glow); }
+    .nav-phone:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(249,115,22,0.4); }
 
     /* ── HERO ── */
     .hero {
-      min-height: 100vh;
-      position: relative; display: flex; align-items: center;
-      padding: 0 5%; padding-top: 80px; overflow: hidden;
+      min-height: 100vh; position: relative;
+      display: flex; align-items: center; padding: 0 5%; padding-top: 80px;
+      overflow: hidden;
     }
     .hero-bg {
       position: absolute; inset: 0;
-      background: url('https://images.pexels.com/photos/164938/pexels-photo-164938.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat;
-      filter: brightness(0.18) saturate(1.4);
+      background: url('https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat;
+      filter: brightness(0.2) saturate(1.2);
     }
     .hero-bg::after {
       content: '';
       position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 30% 60%, rgba(124,58,237,0.25) 0%, transparent 60%),
-                  radial-gradient(ellipse at 70% 30%, rgba(6,182,212,0.15) 0%, transparent 55%),
-                  linear-gradient(to bottom, transparent 60%, var(--bg) 100%);
+      background: linear-gradient(100deg, rgba(15,23,42,0.95) 40%, rgba(29,78,216,0.3) 80%, transparent 100%);
     }
-    .hero-content { position: relative; z-index: 2; max-width: 700px; }
-    .hero-tag {
+    .hero-content { position: relative; z-index: 2; max-width: 680px; }
+    .hero-badge {
       display: inline-flex; align-items: center; gap: 0.5rem;
-      background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.4);
-      padding: 0.4rem 1rem; border-radius: 50px;
-      font-size: 0.8rem; font-weight: 600; letter-spacing: 1px;
-      color: #a78bfa; text-transform: uppercase; margin-bottom: 1.5rem;
+      background: rgba(14,165,233,0.15); border: 1px solid rgba(14,165,233,0.4);
+      padding: 0.4rem 1rem; border-radius: 50px; margin-bottom: 1.5rem;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 1.5px;
+      color: var(--cyan); text-transform: uppercase;
     }
-    .hero-tag span { width: 6px; height: 6px; background: #a78bfa; border-radius: 50%; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+    .hero-badge-dot { width: 7px; height: 7px; background: var(--cyan); border-radius: 50%; animation: blink 1.8s infinite; }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
     .hero h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.8rem, 6vw, 5.5rem);
-      font-weight: 900; line-height: 1.05; letter-spacing: -2px;
-      margin-bottom: 1.5rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 800; line-height: 0.95; letter-spacing: -1px;
+      color: #fff; margin-bottom: 1.5rem; text-transform: uppercase;
     }
-    .hero h1 .grad {
-      background: linear-gradient(135deg, var(--accent2), var(--accent), #f472b6);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .hero p {
-      font-size: 1.15rem; color: var(--muted); line-height: 1.8;
-      max-width: 520px; margin-bottom: 2.5rem;
-    }
+    .hero h1 .accent { color: var(--cyan); display: block; }
+    .hero p { font-size: 1.1rem; color: #94a3b8; line-height: 1.8; max-width: 480px; margin-bottom: 2.5rem; }
     .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), #9333ea);
-      color: #fff; border: none; padding: 0.9rem 2.2rem;
-      border-radius: 50px; cursor: pointer; font-weight: 700;
-      font-size: 1rem; transition: all 0.2s; text-decoration: none; display: inline-block;
+    .btn-main {
+      background: var(--orange); color: #fff;
+      padding: 1rem 2.4rem; border-radius: 10px; font-weight: 700;
+      font-size: 1rem; text-decoration: none; transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 0.5rem;
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(124,58,237,0.5); }
-    .btn-outline {
-      background: transparent; color: var(--text);
-      border: 1px solid var(--border); padding: 0.9rem 2.2rem;
-      border-radius: 50px; cursor: pointer; font-weight: 600;
-      font-size: 1rem; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;
+    .btn-main:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(249,115,22,0.45); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.07); color: #fff;
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 1rem 2.4rem; border-radius: 10px; font-weight: 600;
+      font-size: 1rem; text-decoration: none; transition: all 0.2s;
     }
-    .btn-outline:hover { border-color: var(--accent2); color: var(--accent2); }
-    .hero-scroll {
-      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
-      z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-      color: var(--muted); font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase;
-      animation: bounceDown 2s infinite;
+    .btn-ghost:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
+    .hero-trust {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(15,23,42,0.9); border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; justify-content: center; gap: 4rem; padding: 1.3rem 5%;
+      flex-wrap: wrap; z-index: 2;
     }
-    @keyframes bounceDown { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(6px);} }
-    .hero-scroll svg { opacity: 0.5; }
+    .trust-item { display: flex; align-items: center; gap: 0.6rem; color: #94a3b8; font-size: 0.85rem; font-weight: 500; }
+    .trust-icon { font-size: 1.2rem; }
 
-    /* ── STATS BAR ── */
-    .stats-bar {
-      background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      padding: 2rem 5%;
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+    /* ── EMERGENCY BANNER ── */
+    .emergency {
+      background: linear-gradient(90deg, var(--orange), #dc2626);
+      padding: 1rem 5%; text-align: center;
+      font-weight: 700; color: #fff; font-size: 0.95rem;
+      display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;
     }
-    .stat { text-align: center; }
-    .stat-num {
-      font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 700;
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; letter-spacing: 0.5px; }
+    .emergency a { color: #fff; text-decoration: underline; }
 
     /* ── SECTION BASE ── */
-    section { padding: 7rem 5%; }
-    .section-tag {
-      display: inline-block; font-size: 0.75rem; font-weight: 700;
-      letter-spacing: 2px; text-transform: uppercase; color: var(--accent2);
-      margin-bottom: 0.8rem;
+    section { padding: 6rem 5%; }
+    .section-label {
+      display: inline-block; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--blue-light); margin-bottom: 0.7rem;
     }
     .section-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;
-      letter-spacing: -1px; margin-bottom: 1rem; line-height: 1.1;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800; text-transform: uppercase;
+      letter-spacing: -0.5px; line-height: 1.05; margin-bottom: 1rem;
     }
-    .section-sub { color: var(--muted); font-size: 1.05rem; line-height: 1.7; max-width: 520px; }
+    .section-sub { color: var(--muted); font-size: 1rem; line-height: 1.75; max-width: 500px; }
 
     /* ── SERVICES ── */
-    #services { background: var(--surface); }
+    #services { background: var(--dark); }
+    #services .section-title { color: #fff; }
+    #services .section-label { color: var(--cyan); }
+    #services .section-sub { color: #64748b; }
+    .services-intro { margin-bottom: 3.5rem; }
     .services-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem; margin-top: 3.5rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
     }
-    .service-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 20px; padding: 2rem; position: relative; overflow: hidden;
+    .svc-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px; overflow: hidden;
       transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
       cursor: default;
     }
-    .service-card:hover { transform: translateY(-6px); border-color: var(--accent); box-shadow: var(--glow); }
-    .service-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      opacity: 0; transition: opacity 0.3s;
+    .svc-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--blue-light);
+      box-shadow: 0 10px 40px rgba(59,130,246,0.15);
     }
-    .service-card:hover::before { opacity: 1; }
-    .service-icon {
-      width: 52px; height: 52px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 1.3rem; font-size: 1.5rem;
-    }
-    .service-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.6rem; }
-    .service-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
-    .service-img {
-      width: 100%; height: 160px; object-fit: cover;
-      border-radius: 12px; margin-bottom: 1.3rem;
-      filter: brightness(0.7) saturate(1.2);
-    }
+    .svc-img { width: 100%; height: 180px; object-fit: cover; filter: brightness(0.65) saturate(1.3); transition: filter 0.4s; }
+    .svc-card:hover .svc-img { filter: brightness(0.8) saturate(1.5); }
+    .svc-body { padding: 1.5rem; }
+    .svc-icon { font-size: 1.8rem; margin-bottom: 0.8rem; }
+    .svc-card h3 { color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .svc-card p { color: #64748b; font-size: 0.88rem; line-height: 1.65; }
+    .svc-link { display: inline-flex; align-items: center; gap: 0.3rem; color: var(--cyan); font-size: 0.85rem; font-weight: 600; margin-top: 1rem; text-decoration: none; transition: gap 0.2s; }
+    .svc-link:hover { gap: 0.6rem; }
 
-    /* ── ABOUT / PROCESS ── */
-    #process .process-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem;
-      align-items: center; margin-top: 3rem;
+    /* ── WHY US ── */
+    #why { background: #fff; }
+    .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; margin-top: 3rem; }
+    .why-img-col { position: relative; }
+    .why-main-img { width: 100%; height: 500px; object-fit: cover; border-radius: 20px; filter: brightness(0.85); }
+    .why-badge-float {
+      position: absolute; bottom: -1.5rem; right: -1.5rem;
+      background: var(--orange); color: #fff; border-radius: 16px; padding: 1.5rem;
+      text-align: center; box-shadow: 0 8px 30px rgba(249,115,22,0.4);
     }
-    .process-img-wrap { position: relative; border-radius: 24px; overflow: hidden; }
-    .process-img-wrap img {
-      width: 100%; height: 500px; object-fit: cover;
-      filter: brightness(0.75) saturate(1.3);
+    .why-badge-float .big { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 800; line-height: 1; }
+    .why-badge-float .small { font-size: 0.78rem; font-weight: 600; opacity: 0.9; letter-spacing: 0.5px; }
+    .why-features { display: flex; flex-direction: column; gap: 1.4rem; margin-top: 2rem; }
+    .why-feat {
+      display: flex; gap: 1rem; align-items: flex-start;
+      padding: 1.3rem; border: 1px solid var(--border); border-radius: 14px;
+      transition: border-color 0.3s, transform 0.3s;
     }
-    .process-img-wrap::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(124,58,237,0.3), transparent 60%);
+    .why-feat:hover { border-color: var(--blue-light); transform: translateX(4px); }
+    .why-feat-icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
     }
-    .process-steps { display: flex; flex-direction: column; gap: 1.8rem; }
-    .step {
-      display: flex; gap: 1.2rem; align-items: flex-start;
-      padding: 1.5rem; background: var(--card); border: 1px solid var(--border);
-      border-radius: 16px; transition: border-color 0.3s;
+    .why-feat h4 { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .why-feat p { color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+
+    /* ── STATS ── */
+    .stats-strip {
+      background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+      padding: 4rem 5%;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; text-align: center;
     }
-    .step:hover { border-color: var(--accent); }
-    .step-num {
-      width: 40px; height: 40px; flex-shrink: 0;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 0.9rem;
+    .stat-num {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 3.5rem; font-weight: 800;
+      color: #fff; letter-spacing: -1px; line-height: 1;
     }
-    .step-content h4 { font-weight: 700; margin-bottom: 0.3rem; }
-    .step-content p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+    .stat-num sup { font-size: 1.5rem; vertical-align: super; }
+    .stat-label { color: rgba(255,255,255,0.6); font-size: 0.82rem; font-weight: 500; letter-spacing: 0.5px; margin-top: 0.4rem; text-transform: uppercase; }
 
     /* ── GALLERY ── */
-    #gallery { background: var(--surface); }
+    #gallery { background: var(--bg); }
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: auto;
-      gap: 1rem; margin-top: 3.5rem;
+      grid-template-rows: 220px 220px;
+      gap: 1rem; margin-top: 3rem;
     }
-    .gallery-item {
-      overflow: hidden; border-radius: 16px; position: relative;
-      cursor: pointer;
-    }
-    .gallery-item.tall { grid-row: span 2; }
-    .gallery-item.wide { grid-column: span 2; }
-    .gallery-item img {
-      width: 100%; height: 100%; object-fit: cover; min-height: 200px;
+    .g-item { overflow: hidden; border-radius: 14px; position: relative; }
+    .g-item.span2 { grid-column: span 2; }
+    .g-item img {
+      width: 100%; height: 100%; object-fit: cover;
       transition: transform 0.5s, filter 0.5s;
-      filter: brightness(0.7) saturate(1.2);
+      filter: brightness(0.8);
     }
-    .gallery-item:hover img { transform: scale(1.06); filter: brightness(0.85) saturate(1.5); }
-    .gallery-item::after {
+    .g-item:hover img { transform: scale(1.07); filter: brightness(1); }
+    .g-item::after {
       content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(8,11,18,0.6) 0%, transparent 50%);
+      background: linear-gradient(to top, rgba(15,23,42,0.5) 0%, transparent 50%);
     }
 
-    /* ── PRICING ── */
-    #pricing .pricing-grid {
+    /* ── TESTIMONIALS ── */
+    #testimonials { background: var(--dark); }
+    #testimonials .section-title { color: #fff; }
+    #testimonials .section-label { color: var(--cyan); }
+    .testi-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.5rem; margin-top: 3.5rem;
     }
-    .price-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 24px; padding: 2.5rem; transition: transform 0.3s, box-shadow 0.3s;
-      position: relative; overflow: hidden;
+    .testi-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px; padding: 2rem;
+      transition: transform 0.3s, border-color 0.3s;
     }
-    .price-card.featured {
-      border-color: var(--accent);
-      background: linear-gradient(160deg, rgba(124,58,237,0.12), rgba(6,182,212,0.06));
-      box-shadow: var(--glow);
-    }
-    .price-card:hover { transform: translateY(-5px); }
-    .popular-tag {
-      position: absolute; top: 1.5rem; right: 1.5rem;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      padding: 0.25rem 0.8rem; border-radius: 20px;
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px;
-    }
-    .price-plan { font-size: 0.8rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent2); margin-bottom: 0.8rem; }
-    .price-amount {
-      font-family: 'Space Grotesk', sans-serif; font-size: 3rem; font-weight: 800;
-      letter-spacing: -2px; margin-bottom: 0.3rem;
-    }
-    .price-amount span { font-size: 1.2rem; font-weight: 400; color: var(--muted); }
-    .price-desc { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.8rem; }
-    .price-features { list-style: none; margin-bottom: 2rem; }
-    .price-features li {
-      display: flex; align-items: center; gap: 0.6rem;
-      font-size: 0.9rem; color: var(--text); padding: 0.5rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .price-features li:last-child { border: none; }
-    .check { color: #10b981; font-size: 1rem; }
+    .testi-card:hover { transform: translateY(-4px); border-color: rgba(59,130,246,0.4); }
+    .testi-stars { color: #fbbf24; letter-spacing: 2px; font-size: 0.95rem; margin-bottom: 1rem; }
+    .testi-card blockquote { color: #94a3b8; font-size: 0.93rem; line-height: 1.75; font-style: italic; margin-bottom: 1.5rem; }
+    .testi-author { display: flex; align-items: center; gap: 0.8rem; }
+    .testi-avatar { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; border: 2px solid var(--blue-light); }
+    .testi-name { font-weight: 700; font-size: 0.9rem; color: #fff; }
+    .testi-loc { font-size: 0.78rem; color: #475569; }
 
-    /* ── TESTIMONIALS ── */
-    #testimonials { padding: 7rem 5%; }
-    .testimonials-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    /* ── PRICING ── */
+    #pricing { background: #fff; }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 1.5rem; margin-top: 3.5rem;
     }
-    .testimonial {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 20px; padding: 2rem;
-      transition: border-color 0.3s, transform 0.3s;
+    .price-card {
+      border: 2px solid var(--border); border-radius: 20px; padding: 2.5rem;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; position: relative;
     }
-    .testimonial:hover { border-color: rgba(124,58,237,0.4); transform: translateY(-3px); }
-    .stars { color: var(--accent3); font-size: 1rem; margin-bottom: 1rem; letter-spacing: 2px; }
-    .testimonial p { font-size: 0.95rem; line-height: 1.75; color: var(--muted); margin-bottom: 1.5rem; font-style: italic; }
-    .testimonial-author { display: flex; align-items: center; gap: 0.8rem; }
-    .author-avatar {
-      width: 44px; height: 44px; border-radius: 50%; object-fit: cover;
-      border: 2px solid var(--accent);
+    .price-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(29,78,216,0.1); }
+    .price-card.featured { border-color: var(--blue); }
+    .feat-tag {
+      position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+      background: var(--blue); color: #fff; padding: 0.25rem 1.2rem;
+      border-radius: 0 0 12px 12px; font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; white-space: nowrap;
     }
-    .author-name { font-weight: 700; font-size: 0.9rem; }
-    .author-role { color: var(--muted); font-size: 0.78rem; }
+    .price-name { font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--blue-light); margin-bottom: 0.7rem; }
+    .price-amt { font-family: 'Barlow Condensed', sans-serif; font-size: 3.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.3rem; }
+    .price-amt sub { font-size: 1.1rem; font-weight: 400; color: var(--muted); }
+    .price-desc { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.8rem; }
+    .price-list { list-style: none; margin-bottom: 2rem; }
+    .price-list li { padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.6rem; }
+    .price-list li:last-child { border: none; }
+    .chk { color: #22c55e; font-weight: 700; }
+    .no { color: #cbd5e1; }
+    .btn-blue {
+      display: block; text-align: center; background: var(--blue); color: #fff;
+      padding: 0.9rem; border-radius: 10px; font-weight: 700; text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-blue:hover { background: var(--blue-dark); transform: translateY(-1px); }
+    .btn-border {
+      display: block; text-align: center; border: 2px solid var(--border); color: var(--text);
+      padding: 0.9rem; border-radius: 10px; font-weight: 700; text-decoration: none;
+      transition: border-color 0.2s;
+    }
+    .btn-border:hover { border-color: var(--blue); color: var(--blue); }
 
-    /* ── WAVEFORM VISUALIZER ── */
-    #visualizer { background: var(--surface); padding: 5rem 5%; text-align: center; }
-    .wave-canvas-wrap { margin: 2rem auto; max-width: 700px; }
-    canvas#waveCanvas { width: 100%; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); }
-    .wave-controls { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
-    .wave-btn {
-      background: var(--card); border: 1px solid var(--border); color: var(--text);
-      padding: 0.6rem 1.4rem; border-radius: 50px; cursor: pointer; font-size: 0.9rem;
-      transition: all 0.2s;
+    /* ── CONTACT ── */
+    #contact { background: var(--dark); }
+    #contact .section-title { color: #fff; }
+    #contact .section-label { color: var(--cyan); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3rem; align-items: start; }
+    .contact-info { display: flex; flex-direction: column; gap: 1.5rem; }
+    .contact-item { display: flex; gap: 1rem; align-items: flex-start; }
+    .c-icon {
+      width: 48px; height: 48px; background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;
     }
-    .wave-btn:hover, .wave-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-    /* ── CTA BANNER ── */
-    #cta {
-      padding: 7rem 5%; position: relative; overflow: hidden;
+    .c-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #475569; margin-bottom: 0.2rem; }
+    .c-val { color: #e2e8f0; font-weight: 600; font-size: 1rem; }
+    .contact-form { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 2.5rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+    .form-group label { font-size: 0.82rem; font-weight: 600; color: #94a3b8; letter-spacing: 0.3px; }
+    .form-group input, .form-group select, .form-group textarea {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 0.8rem 1rem; color: #e2e8f0; font-size: 0.92rem;
+      font-family: inherit; transition: border-color 0.2s;
+      outline: none;
     }
-    .cta-inner {
-      background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(6,182,212,0.1));
-      border: 1px solid rgba(124,58,237,0.3); border-radius: 32px;
-      padding: 5rem; text-align: center; position: relative; overflow: hidden;
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--blue-light); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-group select option { background: #1e293b; }
+    .form-submit {
+      width: 100%; background: var(--orange); color: #fff;
+      border: none; padding: 1rem; border-radius: 10px; font-size: 1rem;
+      font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+      font-family: inherit;
     }
-    .cta-bg {
-      position: absolute; inset: 0;
-      background: url('https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover;
-      opacity: 0.07; border-radius: 32px;
-    }
-    .cta-inner h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 800;
-      letter-spacing: -1px; margin-bottom: 1.2rem; position: relative;
-    }
-    .cta-inner p { color: var(--muted); font-size: 1.1rem; margin-bottom: 2.5rem; position: relative; }
-    .cta-inner .hero-btns { justify-content: center; position: relative; }
+    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(249,115,22,0.4); }
 
     /* ── FOOTER ── */
     footer {
-      background: var(--surface); border-top: 1px solid var(--border);
+      background: #020617; border-top: 1px solid rgba(255,255,255,0.06);
       padding: 4rem 5% 2rem;
     }
-    .footer-grid {
-      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem;
-      margin-bottom: 3rem;
-    }
-    .footer-brand p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin: 1rem 0; }
-    .footer-socials { display: flex; gap: 0.8rem; }
-    .social-btn {
-      width: 38px; height: 38px; border-radius: 10px;
-      background: var(--card); border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--muted); font-size: 0.9rem; cursor: pointer; text-decoration: none;
-      transition: all 0.2s;
-    }
-    .social-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .footer-col h4 { font-size: 0.85rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+    .footer-brand p { color: #475569; font-size: 0.88rem; line-height: 1.7; margin: 1rem 0; }
+    .footer-col h4 { color: #94a3b8; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.2rem; }
     .footer-col ul { list-style: none; }
-    .footer-col li { margin-bottom: 0.7rem; }
-    .footer-col a { color: var(--text); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
-    .footer-col a:hover { color: var(--accent2); }
-    .footer-bottom {
-      display: flex; justify-content: space-between; align-items: center;
-      padding-top: 2rem; border-top: 1px solid var(--border);
-      font-size: 0.82rem; color: var(--muted); flex-wrap: wrap; gap: 1rem;
-    }
+    .footer-col li { margin-bottom: 0.6rem; }
+    .footer-col a { color: #475569; text-decoration: none; font-size: 0.88rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.82rem; color: #334155; flex-wrap: wrap; gap: 1rem; }
+
+    /* ── FADE IN ── */
+    .fade-in { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .fade-in.visible { opacity: 1; transform: none; }
 
     /* ── RESPONSIVE ── */
     @media(max-width: 900px) {
-      .stats-bar { grid-template-columns: repeat(2, 1fr); }
-      #process .process-grid { grid-template-columns: 1fr; }
-      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
-      .gallery-item.wide { grid-column: span 1; }
+      .why-grid, .contact-grid { grid-template-columns: 1fr; }
+      .why-badge-float { right: 1rem; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .g-item.span2 { grid-column: span 1; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
       nav .nav-links { display: none; }
     }
     @media(max-width: 600px) {
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .form-row { grid-template-columns: 1fr; }
       .gallery-grid { grid-template-columns: 1fr; }
-      .gallery-item.tall { grid-row: span 1; }
-      .stats-bar { grid-template-columns: repeat(2, 1fr); }
       .footer-grid { grid-template-columns: 1fr; }
-      .cta-inner { padding: 3rem 2rem; }
+      .hero-trust { gap: 1.5rem; }
     }
-
-    /* ── FADE IN ON SCROLL ── */
-    .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .fade-in.visible { opacity: 1; transform: none; }
   </style>
 </head>
 <body>
 
+<!-- EMERGENCY BANNER -->
+<div class="emergency">
+  🚨 <strong>24/7 Emergency Plumbing Available</strong> — Burst pipe? Flood? Call us NOW:
+  <a href="tel:+15552001234">📞 (555) 200-1234</a>
+</div>
+
 <!-- NAV -->
 <nav>
-  <div class="logo">⬡ SoundForge</div>
+  <div class="logo"><span class="logo-icon">🔧</span> Flow<span>Master</span></div>
   <ul class="nav-links">
-    <li><a href="#services">Services</a></li>
-    <li><a href="#process">Process</a></li>
-    <li><a href="#gallery">Studio</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#testimonials">Artists</a></li>
+    ><a href="#services">Services</a></li>
+    ><a href="#why">Why Us</a></li>
+    ><a href="#gallery">Gallery</a></li>
+    ><a href="#pricing">Pricing</a></li>
+    ><a href="#contact">Contact</a></li>
   </ul>
-  <button class="nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Book a Session</button>
+  <a href="tel:+15552001234" class="nav-phone">📞 (555) 200-1234</a>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-content">
-    <div class="hero-tag"><span></span> Professional Audio Studio</div>
-    <h1>Craft Your<br/><span class="grad">Perfect Sound</span></h1>
-    <p>World-class music production, mixing, and mastering services. We turn raw recordings into chart-ready tracks that move people.</p>
+    <div class="hero-badge"><span class="hero-badge-dot"></span> Licensed & Insured — Prague & Surroundings</div>
+    <h1>Your Local <span class="accent">Plumbing</span> Experts</h1>
+    <p>Fast response, fair pricing, and guaranteed work. We fix leaks, install new systems, and handle emergencies — 24 hours a day.</p>
     <div class="hero-btns">
-      <a href="#services" class="btn-primary">Explore Services</a>
-      <a href="#gallery" class="btn-outline">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        View Studio
-      </a>
+      <a href="#contact" class="btn-main">📅 Book a Call-Out</a>
+      <a href="#services" class="btn-ghost">Our Services →</a>
     </div>
   </div>
-  <div class="hero-scroll">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-    Scroll
+  <div class="hero-trust">
+    <div class="trust-item"><span class="trust-icon">✅</span> Fully Licensed</div>
+    <div class="trust-item"><span class="trust-icon">⚡</span> Same-Day Response</div>
+    <div class="trust-item"><span class="trust-icon">💰</span> Upfront Pricing</div>
+    <div class="trust-item"><span class="trust-icon">🛡️</span> 2-Year Guarantee</div>
+    <div class="trust-item"><span class="trust-icon">⭐</span> 4.9/5 Rating</div>
   </div>
 </section>
-
-<!-- STATS -->
-<div class="stats-bar">
-  <div class="stat"><div class="stat-num">1,200+</div><div class="stat-label">Tracks Mastered</div></div>
-  <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Client Satisfaction</div></div>
-  <div class="stat"><div class="stat-num">14yrs</div><div class="stat-label">Industry Experience</div></div>
-  <div class="stat"><div class="stat-num">60+</div><div class="stat-label">Chart Placements</div></div>
-</div>
 
 <!-- SERVICES -->
 <section id="services">
-  <div class="fade-in">
-    <span class="section-tag">What We Offer</span>
-    <h2 class="section-title">Professional Studio Services</h2>
-    <p class="section-sub">From initial beats to final mastered file — we handle every stage of your music's journey.</p>
+  <div class="services-intro fade-in">
+    <span class="section-label">What We Do</span>
+    <h2 class="section-title" style="color:#fff">Complete Plumbing<br/>Services</h2>
+    <p class="section-sub">From a dripping tap to a full bathroom fit-out — our certified plumbers handle every job with precision.</p>
   </div>
   <div class="services-grid">
-    <div class="service-card fade-in">
-      <img class="service-img" src="https://images.pexels.com/photos/1626481/pexels-photo-1626481.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Music Production" loading="lazy"/>
-      <div class="service-icon" style="background:rgba(124,58,237,0.15);">🎹</div>
-      <h3>Music Production</h3>
-      <p>Full beat production, arrangement, and instrumentation. We craft the sonic landscape that defines your unique sound.</p>
+    <div class="svc-card fade-in">
+      <img class="svc-img" src="https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Emergency" loading="lazy"/>
+      <div class="svc-body">
+        <div class="svc-icon">🚨</div>
+        <h3>Emergency Repairs</h3>
+        <p>Burst pipes, flooding, or loss of water pressure — we're on-site within 60 minutes, day or night.</p>
+        <a href="#contact" class="svc-link">Book Now →</a>
+      </div>
     </div>
-    <div class="service-card fade-in">
-      <img class="service-img" src="https://images.pexels.com/photos/164938/pexels-photo-164938.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Mixing" loading="lazy"/>
-      <div class="service-icon" style="background:rgba(6,182,212,0.15);">🎚️</div>
-      <h3>Mixing & Balancing</h3>
-      <p>Precision multi-track mixing with industry-standard plugins. Every element sitting perfectly in the sonic field.</p>
+    <div class="svc-card fade-in">
+      <img class="svc-img" src="https://images.pexels.com/photos/3637786/pexels-photo-3637786.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Bathroom" loading="lazy"/>
+      <div class="svc-body">
+        <div class="svc-icon">🚿</div>
+        <h3>Bathroom Installation</h3>
+        <p>Full bathroom fit-outs from design to completion. Walk-in showers, baths, basins, and heated floors.</p>
+        <a href="#contact" class="svc-link">Learn More →</a>
+      </div>
     </div>
-    <div class="service-card fade-in">
-      <img class="service-img" src="https://images.pexels.com/photos/210922/pexels-photo-210922.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Mastering" loading="lazy"/>
-      <div class="service-icon" style="background:rgba(245,158,11,0.15);">⚡</div>
-      <h3>Audio Mastering</h3>
-      <p>Stem and full-mix mastering for streaming, vinyl, CD, and broadcast. Loudness-compliant for all platforms.</p>
+    <div class="svc-card fade-in">
+      <img class="svc-img" src="https://images.pexels.com/photos/6419128/pexels-photo-6419128.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Boiler" loading="lazy"/>
+      <div class="svc-body">
+        <div class="svc-icon">🔥</div>
+        <h3>Boiler & Heating</h3>
+        <p>Boiler installation, servicing, and repair. Gas Safe certified engineers. Annual service plans available.</p>
+        <a href="#contact" class="svc-link">Get a Quote →</a>
+      </div>
     </div>
-    <div class="service-card fade-in">
-      <img class="service-img" src="https://images.pexels.com/photos/690779/pexels-photo-690779.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Vocal" loading="lazy"/>
-      <div class="service-icon" style="background:rgba(236,72,153,0.15);">🎙️</div>
-      <h3>Vocal Production</h3>
-      <p>Pitch correction, vocal layering, harmonics, and vocal comping. Bring every performance to its full potential.</p>
+    <div class="svc-card fade-in">
+      <img class="svc-img" src="https://images.pexels.com/photos/8486944/pexels-photo-8486944.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Leak Detection" loading="lazy"/>
+      <div class="svc-body">
+        <div class="svc-icon">🔍</div>
+        <h3>Leak Detection</h3>
+        <p>Non-invasive acoustic leak detection. We find hidden leaks before they cause major structural damage.</p>
+        <a href="#contact" class="svc-link">Learn More →</a>
+      </div>
     </div>
-    <div class="service-card fade-in">
-      <img class="service-img" src="https://images.pexels.com/photos/1279107/pexels-photo-1279107.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Sound Design" loading="lazy"/>
-      <div class="service-icon" style="background:rgba(16,185,129,0.15);">🌊</div>
-      <h3>Sound Design</h3>
-      <p>Custom synth patches, foley, and texture creation. Build an original sonic identity no one else has.</p>
+    <div class="svc-card fade-in">
+      <img class="svc-img" src="https://images.pexels.com/photos/7664135/pexels-photo-7664135.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Drainage" loading="lazy"/>
+      <div class="svc-body">
+        <div class="svc-icon">🌀</div>
+        <h3>Drain Unblocking</h3>
+        <p>High-pressure jetting and electro-mechanical cleaning for blocked sinks, toilets, and main sewers.</p>
+        <a href="#contact" class="svc-link">Book Today →</a>
+      </div>
     </div>
-    <div class="service-card fade-in">
-      <img class="service-img" src="https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Live Recording" loading="lazy"/>
-      <div class="service-icon" style="background:rgba(59,130,246,0.15);">🎸</div>
-      <h3>Live Recording</h3>
-      <p>Full-band tracking in our acoustically-treated studio. Vintage analog gear meets modern digital workflow.</p>
+    <div class="svc-card fade-in">
+      <img class="svc-img" src="https://images.pexels.com/photos/5591663/pexels-photo-5591663.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Renovation" loading="lazy"/>
+      <div class="svc-body">
+        <div class="svc-icon">🏗️</div>
+        <h3>Full Renovations</h3>
+        <p>Complete plumbing re-pipes for home renovations and new builds. We work with contractors and architects.</p>
+        <a href="#contact" class="svc-link">Get a Quote →</a>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- PROCESS -->
-<section id="process">
-  <div class="process-grid">
-    <div class="process-img-wrap fade-in">
-      <img src="https://images.pexels.com/photos/4571219/pexels-photo-4571219.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Studio setup" loading="lazy"/>
+<!-- WHY US -->
+<section id="why">
+  <div class="why-grid">
+    <div class="why-img-col fade-in">
+      <img class="why-main-img" src="https://images.pexels.com/photos/8486943/pexels-photo-8486943.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Plumber working" loading="lazy"/>
+      <div class="why-badge-float">
+        <div class="big">14+</div>
+        <div class="small">Years of<br/>Experience</div>
+      </div>
     </div>
     <div class="fade-in">
-      <span class="section-tag">How It Works</span>
-      <h2 class="section-title">From Idea to<br/>Release-Ready</h2>
-      <p class="section-sub" style="margin-bottom:2rem;">A streamlined process built to maximize your creativity and minimize friction.</p>
-      <div class="process-steps">
-        <div class="step">
-          <div class="step-num">01</div>
-          <div class="step-content">
-            <h4>Discovery Call</h4>
-            <p>We learn your vision, references, and goals. No guesswork — just aligned expectations from day one.</p>
+      <span class="section-label">Why Choose Us</span>
+      <h2 class="section-title">The Plumbers<br/>You Can Trust</h2>
+      <p class="section-sub">We're not just fixing pipes — we're building a relationship with every homeowner and business we serve.</p>
+      <div class="why-features">
+        <div class="why-feat">
+          <div class="why-feat-icon">⚡</div>
+          <div>
+            <h4>60-Minute Response</h4>
+            <p>We guarantee on-site arrival within 60 minutes for all emergency call-outs in our service area.</p>
           </div>
         </div>
-        <div class="step">
-          <div class="step-num">02</div>
-          <div class="step-content">
-            <h4>Production & Recording</h4>
-            <p>We build your track layer by layer, sharing previews at every milestone so you're always in control.</p>
+        <div class="why-feat">
+          <div class="why-feat-icon">💰</div>
+          <div>
+            <h4>Transparent Pricing</h4>
+            <p>Fixed-rate quotes before we start. No surprise charges, no hidden fees — ever.</p>
           </div>
         </div>
-        <div class="step">
-          <div class="step-num">03</div>
-          <div class="step-content">
-            <h4>Mix & Master</h4>
-            <p>Your track goes through meticulous mixing and mastering for commercial-grade sonic quality.</p>
+        <div class="why-feat">
+          <div class="why-feat-icon">🛡️</div>
+          <div>
+            <h4>2-Year Workmanship Guarantee</h4>
+            <p>Every job is backed by a full 2-year guarantee on labor and parts. Your peace of mind is our priority.</p>
           </div>
         </div>
-        <div class="step">
-          <div class="step-num">04</div>
-          <div class="step-content">
-            <h4>Delivery & Distribution</h4>
-            <p>Receive all stems and masters in high-res formats, ready for Spotify, Apple Music, and beyond.</p>
+        <div class="why-feat">
+          <div class="why-feat-icon">🏅</div>
+          <div>
+            <h4>Certified Professionals</h4>
+            <p>All engineers are fully licensed, Gas Safe registered, and DBS checked for your safety.</p>
           </div>
         </div>
       </div>
@@ -529,151 +515,207 @@
   </div>
 </section>
 
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="fade-in">
+    <div class="stat-num">4,800<sup>+</sup></div>
+    <div class="stat-label">Jobs Completed</div>
+  </div>
+  <div class="fade-in">
+    <div class="stat-num">4.9<sup>★</sup></div>
+    <div class="stat-label">Average Rating</div>
+  </div>
+  <div class="fade-in">
+    <div class="stat-num">60<sup>min</sup></div>
+    <div class="stat-label">Response Time</div>
+  </div>
+  <div class="fade-in">
+    <div class="stat-num">24<sup>/7</sup></div>
+    <div class="stat-label">Emergency Line</div>
+  </div>
+</div>
+
 <!-- GALLERY -->
 <section id="gallery">
-  <div class="fade-in" style="text-align:center;">
-    <span class="section-tag">The Studio</span>
-    <h2 class="section-title">Our Space</h2>
-    <p class="section-sub" style="margin:0 auto;">Where ideas become albums. Acoustically-treated rooms, vintage gear, and modern tech.</p>
+  <div class="fade-in" style="text-align:center">
+    <span class="section-label">Our Work</span>
+    <h2 class="section-title">Recent Projects</h2>
+    <p class="section-sub" style="margin:0 auto">From simple repairs to full bathroom transformations — see our quality firsthand.</p>
   </div>
-  <div class="gallery-grid" style="margin-top:3rem;">
-    <div class="gallery-item tall fade-in">
-      <img src="https://images.pexels.com/photos/4571219/pexels-photo-4571219.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Studio" loading="lazy"/>
+  <div class="gallery-grid">
+    <div class="g-item span2 fade-in">
+      <img src="https://images.pexels.com/photos/3637786/pexels-photo-3637786.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Bathroom" loading="lazy"/>
     </div>
-    <div class="gallery-item fade-in">
-      <img src="https://images.pexels.com/photos/164938/pexels-photo-164938.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Mixer" loading="lazy"/>
+    <div class="g-item fade-in">
+      <img src="https://images.pexels.com/photos/6419128/pexels-photo-6419128.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Boiler" loading="lazy"/>
     </div>
-    <div class="gallery-item fade-in">
-      <img src="https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Concert" loading="lazy"/>
+    <div class="g-item fade-in">
+      <img src="https://images.pexels.com/photos/8486944/pexels-photo-8486944.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Pipes" loading="lazy"/>
     </div>
-    <div class="gallery-item wide fade-in">
-      <img src="https://images.pexels.com/photos/1626481/pexels-photo-1626481.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Piano" loading="lazy"/>
+    <div class="g-item fade-in">
+      <img src="https://images.pexels.com/photos/5591663/pexels-photo-5591663.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Renovation" loading="lazy"/>
     </div>
-    <div class="gallery-item fade-in">
-      <img src="https://images.pexels.com/photos/210922/pexels-photo-210922.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Guitar" loading="lazy"/>
-    </div>
-    <div class="gallery-item fade-in">
-      <img src="https://images.pexels.com/photos/690779/pexels-photo-690779.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Microphone" loading="lazy"/>
-    </div>
-    <div class="gallery-item fade-in">
-      <img src="https://images.pexels.com/photos/1279107/pexels-photo-1279107.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Concert Lights" loading="lazy"/>
-    </div>
-  </div>
-</section>
-
-<!-- WAVEFORM VISUALIZER -->
-<section id="visualizer">
-  <span class="section-tag">Interactive Demo</span>
-  <h2 class="section-title fade-in">Live Waveform<br/>Visualizer</h2>
-  <p class="section-sub fade-in" style="margin:0 auto 1rem; text-align:center;">Experience how we shape your sound. Press Play to see the waveform animate.</p>
-  <div class="wave-canvas-wrap">
-    <canvas id="waveCanvas" width="700" height="160"></canvas>
-  </div>
-  <div class="wave-controls">
-    <button class="wave-btn active" id="btnPlay">▶ Play</button>
-    <button class="wave-btn" id="btnBass">Bass Boost</button>
-    <button class="wave-btn" id="btnHigh">High Freq</button>
-    <button class="wave-btn" id="btnFull">Full Mix</button>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section id="pricing" style="background:var(--surface);">
-  <div class="fade-in" style="text-align:center;">
-    <span class="section-tag">Transparent Pricing</span>
-    <h2 class="section-title">Choose Your Plan</h2>
-    <p class="section-sub" style="margin:0 auto;">No hidden costs. Professional studio quality at every tier.</p>
-  </div>
-  <div class="pricing-grid">
-    <div class="price-card fade-in">
-      <div class="price-plan">Starter</div>
-      <div class="price-amount">$149<span>/track</span></div>
-      <div class="price-desc">Perfect for independent artists getting started.</div>
-      <ul class="price-features">
-        <li><span class="check">✓</span> Full mix & master</li>
-        <li><span class="check">✓</span> 2 revision rounds</li>
-        <li><span class="check">✓</span> WAV + MP3 delivery</li>
-        <li><span class="check">✓</span> Streaming-ready</li>
-        <li style="color:var(--muted)"><span style="color:var(--muted)">✗</span> Stem mastering</li>
-        <li style="color:var(--muted)"><span style="color:var(--muted)">✗</span> Vinyl prep</li>
-      </ul>
-      <a href="#cta" class="btn-outline" style="display:block;text-align:center;">Get Started</a>
-    </div>
-    <div class="price-card featured fade-in">
-      <div class="popular-tag">Most Popular</div>
-      <div class="price-plan">Pro Studio</div>
-      <div class="price-amount">$349<span>/track</span></div>
-      <div class="price-desc">The full production experience for serious artists.</div>
-      <ul class="price-features">
-        <li><span class="check">✓</span> Full production + mix + master</li>
-        <li><span class="check">✓</span> Unlimited revisions</li>
-        <li><span class="check">✓</span> Stem mastering</li>
-        <li><span class="check">✓</span> All formats incl. vinyl</li>
-        <li><span class="check">✓</span> Vocal production</li>
-        <li><span class="check">✓</span> Priority 48hr turnaround</li>
-      </ul>
-      <a href="#cta" class="btn-primary" style="display:block;text-align:center;">Book Pro Session</a>
-    </div>
-    <div class="price-card fade-in">
-      <div class="price-plan">Label & EP</div>
-      <div class="price-amount">$899<span>/EP</span></div>
-      <div class="price-desc">Full EP or album package for labels and touring artists.</div>
-      <ul class="price-features">
-        <li><span class="check">✓</span> Up to 6 tracks</li>
-        <li><span class="check">✓</span> Full album mastering</li>
-        <li><span class="check">✓</span> Custom sound design</li>
-        <li><span class="check">✓</span> Distribution-ready DDP</li>
-        <li><span class="check">✓</span> Dedicated engineer</li>
-        <li><span class="check">✓</span> A&R consultation</li>
-      </ul>
-      <a href="#cta" class="btn-outline" style="display:block;text-align:center;">Contact Us</a>
+    <div class="g-item fade-in">
+      <img src="https://images.pexels.com/photos/8486943/pexels-photo-8486943.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Plumber" loading="lazy"/>
     </div>
   </div>
 </section>
 
 <!-- TESTIMONIALS -->
 <section id="testimonials">
-  <div class="fade-in" style="text-align:center;">
-    <span class="section-tag">Artist Reviews</span>
-    <h2 class="section-title">Trusted by Artists</h2>
+  <div class="fade-in" style="text-align:center">
+    <span class="section-label">Customer Reviews</span>
+    <h2 class="section-title" style="color:#fff">What Our Clients Say</h2>
   </div>
-  <div class="testimonials-grid">
-    <div class="testimonial fade-in">
-      <div class="stars">★★★★★</div>
-      <p>"SoundForge completely transformed my EP. The mastering made my tracks sound like they belonged on a major label — not what I expected for the price."</p>
-      <div class="testimonial-author">
-        <img class="author-avatar" src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Artist" loading="lazy"/>
-        <div><div class="author-name">Maya Torres</div><div class="author-role">R&B Artist · 280K Followers</div></div>
+  <div class="testi-grid">
+    <div class="testi-card fade-in">
+      <div class="testi-stars">★★★★★</div>
+      <blockquote>"Called at 11pm with a burst pipe flooding my kitchen. They were on-site within 45 minutes and had everything sorted in 2 hours. Absolute lifesavers."</blockquote>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Client" loading="lazy"/>
+        <div><div class="testi-name">Sarah K.</div><div class="testi-loc">Homeowner · Prague 6</div></div>
       </div>
     </div>
-    <div class="testimonial fade-in">
-      <div class="stars">★★★★★</div>
-      <p>"The production quality here is insane. They understood my electronic sound immediately and pushed it further than I thought possible. My best release yet."</p>
-      <div class="testimonial-author">
-        <img class="author-avatar" src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Artist" loading="lazy"/>
-        <div><div class="author-name">Kai Nakamura</div><div class="author-role">Electronic Producer · Berlin</div></div>
+    <div class="testi-card fade-in">
+      <div class="testi-stars">★★★★★</div>
+      <blockquote>"Fully renovated our bathroom from scratch. The team was professional, tidy, and finished two days ahead of schedule. The result is stunning."</blockquote>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Client" loading="lazy"/>
+        <div><div class="testi-name">Martin D.</div><div class="testi-loc">Property Developer</div></div>
       </div>
     </div>
-    <div class="testimonial fade-in">
-      <div class="stars">★★★★★</div>
-      <p>"Fast, communicative, and incredibly talented. The stem mastering they did for my album gave me full control at the pressing plant. Worth every cent."</p>
-      <div class="testimonial-author">
-        <img class="author-avatar" src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Artist" loading="lazy"/>
-        <div><div class="author-name">Léa Dubois</div><div class="author-role">Indie Singer-Songwriter</div></div>
+    <div class="testi-card fade-in">
+      <div class="testi-stars">★★★★★</div>
+      <blockquote>"Upfront pricing with no nasty surprises. Fixed a persistent leak that three other plumbers couldn't find. I won't use anyone else now."</blockquote>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Client" loading="lazy"/>
+        <div><div class="testi-name">Jana H.</div><div class="testi-loc">Apartment Owner · Praha 2</div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
-<section id="cta">
-  <div class="cta-inner fade-in">
-    <div class="cta-bg"></div>
-    <h2>Ready to Make Your<br/><span class="grad">Best Track Ever?</span></h2>
-    <p>Book a free 30-minute consultation. No obligations — just honest advice about your music.</p>
-    <div class="hero-btns">
-      <a href="mailto:hello@soundforge.studio" class="btn-primary">📩 Book Free Consult</a>
-      <a href="#pricing" class="btn-outline">View Pricing</a>
+<!-- PRICING -->
+<section id="pricing">
+  <div class="fade-in" style="text-align:center">
+    <span class="section-label">Transparent Rates</span>
+    <h2 class="section-title">Simple Pricing</h2>
+    <p class="section-sub" style="margin:0 auto">All rates include parts, labour, and our 2-year guarantee. No call-out fee.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card fade-in">
+      <div class="price-name">Standard</div>
+      <div class="price-amt">€79<sub>/hour</sub></div>
+      <div class="price-desc">For routine repairs and small fixes during business hours.</div>
+      <ul class="price-list">
+        ><span class="chk">✓</span> Mon–Fri, 8am–6pm</li>
+        ><span class="chk">✓</span> Leak & tap repairs</li>
+        ><span class="chk">✓</span> Drain unblocking</li>
+        ><span class="chk">✓</span> Upfront fixed quote</li>
+        ><span class="no">✗</span> Weekend availability</li>
+        ><span class="no">✗</span> Emergency priority</li>
+      </ul>
+      <a href="#contact" class="btn-border">Book Standard</a>
+    </div>
+    <div class="price-card featured fade-in">
+      <div class="feat-tag">MOST POPULAR</div>
+      <div class="price-name">Priority</div>
+      <div class="price-amt">€119<sub>/hour</sub></div>
+      <div class="price-desc">Flexible scheduling including evenings and weekends.</div>
+      <ul class="price-list">
+        ><span class="chk">✓</span> 7 days, 7am–10pm</li>
+        ><span class="chk">✓</span> All standard services</li>
+        ><span class="chk">✓</span> Boiler & heating work</li>
+        ><span class="chk">✓</span> Bathroom installations</li>
+        ><span class="chk">✓</span> Same-day response</li>
+        ><span class="no">✗</span> Midnight emergencies</li>
+      </ul>
+      <a href="#contact" class="btn-blue">Book Priority</a>
+    </div>
+    <div class="price-card fade-in">
+      <div class="price-name">Emergency</div>
+      <div class="price-amt">€169<sub>/hour</sub></div>
+      <div class="price-desc">Full 24/7 emergency cover. We're there when you need us most.</div>
+      <ul class="price-list">
+        ><span class="chk">✓</span> 24 hours, 7 days</li>
+        ><span class="chk">✓</span> 60-min response</li>
+        ><span class="chk">✓</span> All services included</li>
+        ><span class="chk">✓</span> Gas leak response</li>
+        ><span class="chk">✓</span> Insurance reports</li>
+        ><span class="chk">✓</span> Priority dispatch</li>
+      </ul>
+      <a href="tel:+15552001234" class="btn-border">Call Now</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="fade-in">
+    <span class="section-label">Get in Touch</span>
+    <h2 class="section-title" style="color:#fff">Book a Plumber<br/>Today</h2>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info fade-in">
+      <p style="color:#64748b;font-size:1rem;line-height:1.8;margin-bottom:1rem;">Fill in the form and we'll call you back within 15 minutes to confirm your booking and provide a free quote.</p>
+      <div class="contact-item">
+        <div class="c-icon">📞</div>
+        <div><div class="c-label">Phone</div><div class="c-val">(555) 200-1234</div></div>
+      </div>
+      <div class="contact-item">
+        <div class="c-icon">✉️</div>
+        <div><div class="c-label">Email</div><div class="c-val">hello@flowmaster.cz</div></div>
+      </div>
+      <div class="contact-item">
+        <div class="c-icon">📍</div>
+        <div><div class="c-label">Service Area</div><div class="c-val">Prague & Central Bohemia</div></div>
+      </div>
+      <div class="contact-item">
+        <div class="c-icon">🕐</div>
+        <div><div class="c-label">Hours</div><div class="c-val">24/7 Emergency · Mon–Sat 7am–8pm</div></div>
+      </div>
+    </div>
+    <div class="contact-form fade-in">
+      <form onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            abel>First Name</label>
+            <input type="text" placeholder="Jan" required/>
+          </div>
+          <div class="form-group">
+            abel>Last Name</label>
+            <input type="text" placeholder="Novák" required/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            abel>Phone</label>
+            <input type="tel" placeholder="+420 123 456 789" required/>
+          </div>
+          <div class="form-group">
+            abel>Email</label>
+            <input type="email" placeholder="jan@email.cz"/>
+          </div>
+        </div>
+        <div class="form-group">
+          abel>Service Needed</label>
+          <select required>
+            <option value="" disabled selected>Select a service...</option>
+            <option>Emergency Repair</option>
+            <option>Leak Detection</option>
+            <option>Drain Unblocking</option>
+            <option>Bathroom Installation</option>
+            <option>Boiler Service/Repair</option>
+            <option>General Plumbing</option>
+            <option>Full Renovation</option>
+          </select>
+        </div>
+        <div class="form-group">
+          abel>Message / Description</label>
+          <textarea placeholder="Describe the problem briefly..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">📅 Request Booking — We'll Call Back in 15 Min</button>
+      </form>
     </div>
   </div>
 </section>
@@ -682,162 +724,100 @@
 <footer>
   <div class="footer-grid">
     <div class="footer-brand">
-      <div class="logo">⬡ SoundForge</div>
-      <p>Professional music production & mastering studio. We help artists sound their absolute best.</p>
-      <div class="footer-socials">
-        <a href="#" class="social-btn">🎵</a>
-        <a href="#" class="social-btn">📸</a>
-        <a href="#" class="social-btn">🐦</a>
-        <a href="#" class="social-btn">▶</a>
-      </div>
+      <div class="logo" style="font-size:1.4rem;">🔧 Flow<span>Master</span></div>
+      <p>Prague's most trusted plumbing company. Licensed, insured, and available 24/7 for all your plumbing needs.</p>
     </div>
     <div class="footer-col">
       <h4>Services</h4>
       <ul>
-        <li><a href="#">Music Production</a></li>
-        <li><a href="#">Mixing</a></li>
-        <li><a href="#">Mastering</a></li>
-        <li><a href="#">Vocal Production</a></li>
-        <li><a href="#">Sound Design</a></li>
+        ><a href="#">Emergency Repairs</a></li>
+        ><a href="#">Leak Detection</a></li>
+        ><a href="#">Drain Unblocking</a></li>
+        ><a href="#">Bathroom Fit-Out</a></li>
+        ><a href="#">Boiler Services</a></li>
       </ul>
     </div>
     <div class="footer-col">
-      <h4>Studio</h4>
+      <h4>Company</h4>
       <ul>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Our Team</a></li>
-        <li><a href="#">Gear List</a></li>
-        <li><a href="#">Gallery</a></li>
-        <li><a href="#">Blog</a></li>
+        ><a href="#">About Us</a></li>
+        ><a href="#">Our Team</a></li>
+        ><a href="#">Careers</a></li>
+        ><a href="#">Reviews</a></li>
+        ><a href="#">Blog</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h4>Contact</h4>
       <ul>
-        <li><a href="#">hello@soundforge.studio</a></li>
-        <li><a href="#">+1 (555) 200-4400</a></li>
-        <li><a href="#">Los Angeles, CA</a></li>
-        <li><a href="#">Book a Session</a></li>
+        ><a href="tel:+15552001234">(555) 200-1234</a></li>
+        ><a href="#">hello@flowmaster.cz</a></li>
+        ><a href="#">Prague, CZ</a></li>
+        ><a href="#">Service Areas</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>Webdesign with ❤️ by Luboš Bíža ©2026 SoundForge Studio. All rights reserved.</span>
-    <span>Privacy Policy · Terms of Service</span>
+    <span>© 2026 FlowMaster Plumbing. All rights reserved.</span>
+    <span>Privacy Policy · Terms · Cookie Policy</span>
   </div>
 </footer>
 
 <script>
-  // ── FADE IN ON SCROLL ──
+  // ── SCROLL FADE IN ──
   const fadeEls = document.querySelectorAll('.fade-in');
-  const observer = new IntersectionObserver((entries) => {
+  const obs = new IntersectionObserver((entries) => {
     entries.forEach((e, i) => {
       if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 80);
-        observer.unobserve(e.target);
+        setTimeout(() => e.target.classList.add('visible'), i * 70);
+        obs.unobserve(e.target);
       }
     });
-  }, { threshold: 0.1 });
-  fadeEls.forEach(el => observer.observe(el));
+  }, { threshold: 0.08 });
+  fadeEls.forEach(el => obs.observe(el));
 
-  // ── NAV SCROLL EFFECT ──
-  window.addEventListener('scroll', () => {
-    document.querySelector('nav').style.background =
-      window.scrollY > 60 ? 'rgba(8,11,18,0.97)' : 'rgba(8,11,18,0.85)';
-  });
+  // ── COUNTER ANIMATION ──
+  function animateCounter(el, target, suffix) {
+    let current = 0;
+    const step = target / 60;
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(timer); }
+      el.textContent = Math.floor(current).toLocaleString() + suffix;
+    }, 25);
+  }
 
-  // ── WAVEFORM VISUALIZER ──
-  const canvas = document.getElementById('waveCanvas');
-  const ctx = canvas.getContext('2d');
-  let animId, playing = false;
-  let mode = 'full'; // bass | high | full
-  let t = 0;
-
-  function drawWave() {
-    const W = canvas.width, H = canvas.height;
-    ctx.clearRect(0, 0, W, H);
-
-    const configs = {
-      full: [
-        { freq: 0.015, amp: 40, color: '#7c3aed', phase: 0 },
-        { freq: 0.025, amp: 25, color: '#06b6d4', phase: 1.2 },
-        { freq: 0.04,  amp: 15, color: '#f59e0b', phase: 2.4 },
-      ],
-      bass: [
-        { freq: 0.008, amp: 60, color: '#7c3aed', phase: 0 },
-        { freq: 0.012, amp: 40, color: '#9333ea', phase: 0.5 },
-      ],
-      high: [
-        { freq: 0.05, amp: 15, color: '#06b6d4', phase: 0 },
-        { freq: 0.08, amp: 10, color: '#22d3ee', phase: 0.8 },
-        { freq: 0.12, amp: 8,  color: '#f0abfc', phase: 1.5 },
-      ],
-    };
-
-    configs[mode].forEach(wave => {
-      ctx.beginPath();
-      ctx.lineWidth = 2.5;
-      const grad = ctx.createLinearGradient(0, 0, W, 0);
-      grad.addColorStop(0, wave.color + '00');
-      grad.addColorStop(0.2, wave.color);
-      grad.addColorStop(0.8, wave.color);
-      grad.addColorStop(1, wave.color + '00');
-      ctx.strokeStyle = grad;
-      ctx.shadowBlur = 12;
-      ctx.shadowColor = wave.color;
-
-      for (let x = 0; x <= W; x++) {
-        const y = H / 2 +
-          Math.sin(x * wave.freq + t + wave.phase) * wave.amp *
-          Math.sin(x * 0.003 + 0.5);
-        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  const statsObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const nums = [['4,800', 4800, '+'], ['4.9', 4.9, '★'], ['60', 60, 'min'], ['24', 24, '/7']];
+        document.querySelectorAll('.stat-num').forEach((el, i) => {
+          const [,val, suf] = nums[i];
+          animateCounter(el, val, `<sup>${suf}</sup>`);
+        });
+        statsObs.disconnect();
       }
-      ctx.stroke();
-      ctx.shadowBlur = 0;
     });
+  }, { threshold: 0.5 });
+  const stripEl = document.querySelector('.stats-strip');
+  if (stripEl) statsObs.observe(stripEl);
 
-    // center line
-    ctx.beginPath();
-    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-    ctx.lineWidth = 1;
-    ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2);
-    ctx.stroke();
-
-    t += 0.04;
-    if (playing) animId = requestAnimationFrame(drawWave);
+  // ── FORM SUBMIT ──
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = '✅ Booking Received! We\'ll call you shortly.';
+    btn.style.background = '#16a34a';
+    btn.disabled = true;
   }
 
-  function stopWave() {
-    playing = false;
-    cancelAnimationFrame(animId);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // draw static flat line
-    const W = canvas.width, H = canvas.height;
-    ctx.beginPath();
-    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-    ctx.lineWidth = 1;
-    ctx.moveTo(0, H/2); ctx.lineTo(W, H/2);
-    ctx.stroke();
-  }
-  stopWave();
-
-  document.getElementById('btnPlay').addEventListener('click', function() {
-    if (playing) { stopWave(); this.textContent = '▶ Play'; this.classList.remove('active'); }
-    else { playing = true; drawWave(); this.textContent = '⏸ Pause'; this.classList.add('active'); }
+  // ── SMOOTH NAV ──
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
   });
-
-  function setMode(m, btn) {
-    mode = m;
-    document.querySelectorAll('.wave-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('btnPlay').classList.add('active');
-    document.getElementById('btnPlay').textContent = '⏸ Pause';
-    if (!playing) { playing = true; drawWave(); }
-  }
-
-  document.getElementById('btnBass').addEventListener('click', function() { setMode('bass', this); });
-  document.getElementById('btnHigh').addEventListener('click', function() { setMode('high', this); });
-  document.getElementById('btnFull').addEventListener('click', function() { setMode('full', this); });
 </script>
 </body>
 </html>
